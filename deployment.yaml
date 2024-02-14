@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: testweb
-          image: uguroral/testweb:"${IMAGE_NAME}"
+          image: uguroral/testweb:latest
           resources:
             limits:
               memory: "256Mi"

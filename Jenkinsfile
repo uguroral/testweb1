@@ -19,28 +19,33 @@ pipeline{
 
         }
     
-        stage("Checkout from SCM"){
-            steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/uguroral/testweb1'
+        stage("Checkout from SCM") {
+    steps {
+        git branch: 'main', credentialsId: 'github', url: 'https://github.com/uguroral/testweb1'
+    }
+}
+
+stage("Build & Push Docker Image") {
+    steps {
+        script {
+            def customTag = "${IMAGE_NAME}:${IMAGE_TAG}"
+            def sedScript = "s|uguroral/testweb:latest|uguroral/testweb:${IMAGE_TAG}|g"
+            
+            // deployment.yaml dosyasındaki latest değerini IMAGE_TAG ile değiştir
+            sh "sed -i '' '${sedScript}' path/to/deployment.yaml"
+            
+            // Docker imajını oluştur ve Docker registry'ye yükle
+            docker.withRegistry('',DOCKER_PASS) {
+                docker_image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
             }
-
-        }
-        
-        stage("Build & Push Docker Image") {
-            steps {
-                script {
-                    docker.withRegistry('',DOCKER_PASS) {
-                        docker_image = docker.build "${IMAGE_NAME}"
-                    }
-
-                    docker.withRegistry('',DOCKER_PASS) {
-                        docker_image.push("${IMAGE_TAG}")
-                        docker_image.push('latest')
-                    }
-                }
+            docker.withRegistry('',DOCKER_PASS) {
+                docker_image.push("${IMAGE_NAME}:${IMAGE_TAG}")
+                docker_image.push("${IMAGE_NAME}:latest")
             }
-
         }
+    }
+}
+
                
 
     }
