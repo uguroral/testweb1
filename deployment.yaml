@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testweb
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: testweb
+  template:
+    metadata:
+      labels:
+        app: testweb
+    spec:
+      containers:
+        - name: testweb
+          image: uguroral/testweb:"${IMAGE_NAME}"
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+          ports:
+            - containerPort: 8080
