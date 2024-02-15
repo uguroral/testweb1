@@ -5,8 +5,8 @@ FROM nginx
 WORKDIR /usr/share/nginx/html
 
 # wget paketini yükle
-RUN apk add --no-cache wget
-
+#RUN apk add --no-cache wget
+RUN apt install wget
 # index.html dosyasını GitHub deposundan al
 RUN rm index.html && wget https://raw.githubusercontent.com/uguroral/testweb1/main/index.html
 
